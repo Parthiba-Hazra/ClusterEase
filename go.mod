@@ -1,4 +1,4 @@
-module github.com/Parthiba-Hazra/ClusterEase
+module github.com/Parthiba-Hazra/clstres
 
 go 1.19
 
