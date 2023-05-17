@@ -38,12 +38,11 @@ func GetClient() (*kubernetes.Clientset, error) {
 		panic(err.Error())
 	}
 
+	// fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
+
 	return clientset, err
 	// for {
-	// 	pods, err := clientset.CoreV1().Pods("").List(context.TODO(), metav1.ListOptions{})
-	// 	if err != nil {
-	// 		panic(err.Error())
-	// 	}
+
 	// 	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
 
 	// 	// Examples for error handling:
