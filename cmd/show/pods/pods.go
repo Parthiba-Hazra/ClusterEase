@@ -4,15 +4,19 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"log"
+	"os"
+
 	"github.com/Parthiba-Hazra/clstres/client"
+	"github.com/Parthiba-Hazra/clstres/cmd/show"
 	"github.com/Parthiba-Hazra/clstres/helper"
-	"github.com/emicklei/go-restful/v3/log"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
-// showCmd represents the show command
-var showCmd = &cobra.Command{
-	Use:   "show",
+// podsCmd represents the pods command
+var podsCmd = &cobra.Command{
+	Use:   "pods",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -29,21 +33,28 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			log.Printf("error getting pods: %v", err)
 		} else {
-			log.Print(podDetails)
+			table := tablewriter.NewWriter(os.Stdout)
+			table.SetHeader([]string{"Pod name", "Namespace", "status"})
+
+			for _, pod := range podDetails {
+				row := []string{pod.Name, pod.Namespace, pod.Status}
+				table.Append(row)
+			}
+			table.Render()
 		}
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(showCmd)
+	show.ShowCmd.AddCommand(podsCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// showCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// podsCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// showCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// podsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

@@ -10,6 +10,7 @@ import (
 type PodInfo struct {
 	Name      string
 	Namespace string
+	Status    string
 }
 
 func ShowPod(clientset *kubernetes.Clientset) ([]PodInfo, error) {
@@ -20,9 +21,11 @@ func ShowPod(clientset *kubernetes.Clientset) ([]PodInfo, error) {
 
 	var podInfoList []PodInfo
 	for _, pod := range pods.Items {
+		status := pod.Status.Phase
 		podInfo := PodInfo{
 			Name:      pod.Name,
 			Namespace: pod.Namespace,
+			Status:    string(status),
 		}
 
 		podInfoList = append(podInfoList, podInfo)

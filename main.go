@@ -5,6 +5,8 @@ package main
 
 import (
 	"github.com/Parthiba-Hazra/clstres/cmd"
+	_ "github.com/Parthiba-Hazra/clstres/cmd/show"
+	_ "github.com/Parthiba-Hazra/clstres/cmd/show/pods"
 )
 
 func main() {
