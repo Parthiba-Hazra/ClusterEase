@@ -25,11 +25,12 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		namespace, _ := cmd.Flags().GetString("ns")
 		client, err := client.GetClient()
 		if err != nil {
 			log.Printf("error getting kubernetes client: %v", err)
 		}
-		podDetails, err := helper.ShowPod(client)
+		podDetails, err := helper.ShowPod(client, namespace)
 		if err != nil {
 			log.Printf("error getting pods: %v", err)
 		} else {
