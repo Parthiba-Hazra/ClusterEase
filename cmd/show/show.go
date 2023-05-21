@@ -9,6 +9,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Verbose bool
+var Source string
+
 // showCmd represents the show command
 var ShowCmd = &cobra.Command{
 	Use:   "show",
@@ -21,6 +24,7 @@ var ShowCmd = &cobra.Command{
 
 func init() {
 	cmd.RootCmd.AddCommand(ShowCmd)
+	cmd.RootCmd.PersistentFlags().String("ns", "", "You can provide kubernets namspace (eg: --ns=default)")
 
 	// Here you will define your flags and configuration settings.
 
