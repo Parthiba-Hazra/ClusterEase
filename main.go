@@ -6,8 +6,10 @@ package main
 import (
 	"github.com/Parthiba-Hazra/clstres/cmd"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/show"
+	_ "github.com/Parthiba-Hazra/clstres/cmd/show/deployments"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/show/namespaces"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/show/pods"
+	_ "github.com/Parthiba-Hazra/clstres/cmd/show/services"
 )
 
 func main() {
