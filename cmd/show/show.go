@@ -24,7 +24,6 @@ var ShowCmd = &cobra.Command{
 
 func init() {
 	cmd.RootCmd.AddCommand(ShowCmd)
-	cmd.RootCmd.PersistentFlags().String("ns", "", "You can provide kubernets namspace (eg: --ns=default)")
 
 	// Here you will define your flags and configuration settings.
 

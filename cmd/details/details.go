@@ -4,24 +4,25 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package details
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/Parthiba-Hazra/clstres/cmd"
 	"github.com/spf13/cobra"
 )
 
 // detailsCmd represents the details command
-var detailsCmd = &cobra.Command{
+var DetailsCmd = &cobra.Command{
 	Use:   "details",
 	Short: "show a pod's details",
-	Long:  `It provide all details of a pod`,
+	Long:  `It a detail view of a pod`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("details called")
+		log.Print("please provide resource type to get details")
 	},
 }
 
 func init() {
-	cmd.RootCmd.AddCommand(detailsCmd)
+	cmd.RootCmd.AddCommand(DetailsCmd)
+	DetailsCmd.PersistentFlags().String("p", "", "You need to provide the name of pod in order to get details of that perticular pod (eg: --p=pod-name)")
 
 	// Here you will define your flags and configuration settings.
 

@@ -30,6 +30,7 @@ func Execute() {
 }
 
 func init() {
+	RootCmd.PersistentFlags().String("ns", "", "You can provide kubernets namspace (eg: --ns=default)")
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
