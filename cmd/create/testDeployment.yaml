@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-deployment
+  labels:
+    app: test
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      containers:
+        - name: test
+          image: rono007/demo-app:5
+          ports:
+            - containerPort: 3000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-service
+  labels:
+    job: node-test
+    app: test
+spec:
+  type: ClusterIP
+  selector:
+    app: test
+  ports:
+    - name: web
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

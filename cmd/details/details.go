@@ -13,8 +13,8 @@ import (
 // detailsCmd represents the details command
 var DetailsCmd = &cobra.Command{
 	Use:   "details",
-	Short: "show a pod's details",
-	Long:  `It a detail view of a pod`,
+	Short: "show kubernetes resources details",
+	Long:  `It show a detail view of a kubernetes resoureces according to user input`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Print("please provide resource type to get details")
 	},
@@ -22,7 +22,6 @@ var DetailsCmd = &cobra.Command{
 
 func init() {
 	cmd.RootCmd.AddCommand(DetailsCmd)
-	DetailsCmd.PersistentFlags().String("p", "", "You need to provide the name of pod in order to get details of that perticular pod (eg: --p=pod-name)")
 
 	// Here you will define your flags and configuration settings.
 

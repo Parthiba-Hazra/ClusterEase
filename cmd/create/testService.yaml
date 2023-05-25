@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-service
+  labels:
+    job: test-api
+    app: test
+spec:
+  type: ClusterIP
+  selector:
+    app: test
+  ports:
+    - name: web
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

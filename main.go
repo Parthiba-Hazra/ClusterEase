@@ -5,6 +5,7 @@ package main
 
 import (
 	"github.com/Parthiba-Hazra/clstres/cmd"
+	_ "github.com/Parthiba-Hazra/clstres/cmd/create"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/details"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/details/pod"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/details/service"
