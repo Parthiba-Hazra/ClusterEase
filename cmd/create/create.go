@@ -15,8 +15,8 @@ import (
 // createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create",
-	Short: "It will create kubernetes services",
-	Long:  `It will create kubernetes services according to yaml file Kind (example -- 'clstres create --fp=./cmd/create/testDeployment.yaml --ns=default')`,
+	Short: "It will create kubernetes resources",
+	Long:  `It will create kubernetes resources according to yaml file Kind (example -- 'clstres create --fp=./cmd/create/testDeployment.yaml --ns=default')`,
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("ns")
 		filePath, _ := cmd.Flags().GetString("fp")

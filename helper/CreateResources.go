@@ -12,11 +12,12 @@ import (
 	"k8s.io/client-go/kubernetes/scheme"
 
 	appsv1 "k8s.io/api/apps/v1"
+	batchv1 "k8s.io/api/batch/v1"
+	batchv1beta1 "k8s.io/api/batch/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 )
 
 func CreateResourcesFromYAML(clientset *kubernetes.Clientset, namespace string, filePath string) error {
-	// Read the YAML file contents
 	yamlContent, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		return err
@@ -47,7 +48,6 @@ func CreateResourcesFromYAML(clientset *kubernetes.Clientset, namespace string, 
 			return err
 		}
 
-		// Create the deployment in the cluster
 		_, err = clientset.AppsV1().Deployments(namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
 		if err != nil {
 			return err
@@ -63,7 +63,6 @@ func CreateResourcesFromYAML(clientset *kubernetes.Clientset, namespace string, 
 			return err
 		}
 
-		// Create the service in the cluster
 		_, err = clientset.CoreV1().Services(namespace).Create(context.TODO(), service, metav1.CreateOptions{})
 		if err != nil {
 			return err
@@ -71,7 +70,80 @@ func CreateResourcesFromYAML(clientset *kubernetes.Clientset, namespace string, 
 
 		fmt.Println("Service created:", service.GetName())
 
-	// Add more cases for other resource kinds as needed
+	case "StatefulSet":
+		// Convert the typed object to a StatefulSet object
+		statefulSet := &appsv1.StatefulSet{}
+		err := runtime.DefaultUnstructuredConverter.FromUnstructured(typedObj, statefulSet)
+		if err != nil {
+			return err
+		}
+
+		_, err = clientset.AppsV1().StatefulSets(namespace).Create(context.TODO(), statefulSet, metav1.CreateOptions{})
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("StatefulSet created:", statefulSet.GetName())
+
+	case "DaemonSet":
+		// Convert the typed object to a DaemonSet object
+		daemonSet := &appsv1.DaemonSet{}
+		err := runtime.DefaultUnstructuredConverter.FromUnstructured(typedObj, daemonSet)
+		if err != nil {
+			return err
+		}
+
+		_, err = clientset.AppsV1().DaemonSets(namespace).Create(context.TODO(), daemonSet, metav1.CreateOptions{})
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("DaemonSet created:", daemonSet.GetName())
+
+	case "Job":
+		// Convert the typed object to a Job object
+		job := &batchv1.Job{}
+		err := runtime.DefaultUnstructuredConverter.FromUnstructured(typedObj, job)
+		if err != nil {
+			return err
+		}
+
+		_, err = clientset.BatchV1().Jobs(namespace).Create(context.TODO(), job, metav1.CreateOptions{})
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("Job created:", job.GetName())
+
+	case "CronJob":
+		// Convert the typed object to a CronJob object
+		cronJob := &batchv1beta1.CronJob{}
+		err := runtime.DefaultUnstructuredConverter.FromUnstructured(typedObj, cronJob)
+		if err != nil {
+			return err
+		}
+
+		_, err = clientset.BatchV1beta1().CronJobs(namespace).Create(context.TODO(), cronJob, metav1.CreateOptions{})
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("CronJob created:", cronJob.GetName())
+
+	case "Namespace":
+		// Convert the typed object to a Namespace object
+		namespaceObj := &corev1.Namespace{}
+		err := runtime.DefaultUnstructuredConverter.FromUnstructured(typedObj, namespaceObj)
+		if err != nil {
+			return err
+		}
+
+		_, err = clientset.CoreV1().Namespaces().Create(context.TODO(), namespaceObj, metav1.CreateOptions{})
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("Namespace created:", namespaceObj.GetName())
 
 	default:
 		return fmt.Errorf("unsupported kind: %s", kind)
