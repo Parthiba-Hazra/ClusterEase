@@ -4,7 +4,10 @@ go 1.19
 
 require k8s.io/client-go v0.27.1
 
-require github.com/mattn/go-runewidth v0.0.9 // indirect
+require (
+	github.com/mattn/go-runewidth v0.0.9 // indirect
+	github.com/moby/spdystream v0.2.0 // indirect
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
