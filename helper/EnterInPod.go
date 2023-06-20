@@ -2,55 +2,49 @@ package helper
 
 import (
 	"context"
-	"fmt"
-	"os"
+	"io"
 
-	corev1 "k8s.io/api/core/v1"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/kubernetes/scheme"
+	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
 )
 
-func EnterInPod(clientset *kubernetes.Clientset, podName, namespace, command string) error {
-	// Get the pod details
-	pod, err := clientset.CoreV1().Pods(namespace).Get(context.TODO(), podName, v1.GetOptions{})
-	if err != nil {
-		return err
-	}
-
-	// Set up the command to execute within the pod
+// EnterInPod executes a command on a specific pod and waits for the command's output.
+func EnterInPod(client *kubernetes.Clientset, config *restclient.Config, podName string, namespace string,
+	command string, stdin io.Reader, stdout io.Writer, stderr io.Writer) error {
 	cmd := []string{
-		"/bin/sh",
+		"sh",
 		"-c",
 		command,
 	}
-
-	// Create an executor for running the command
-	executor, err := remotecommand.NewSPDYExecutor(clientset.Config, "POST", fmt.Sprintf("/api/v1/namespaces/%s/pods/%s/exec", namespace, podName), []string{"sh"}, os.Stdout, os.Stderr)
-
-	// Create the exec request
-	req := clientset.CoreV1().RESTClient().Post().
-		Resource("pods").
-		Name(podName).
-		Namespace(namespace).
-		SubResource("exec").
-		VersionedParams(&corev1.PodExecOptions{
-			Command: cmd,
-			Stdin:   false,
-			Stdout:  true,
-			Stderr:  true,
-			TTY:     false,
-		}, v1.ParameterCodec)
-
-	// Prepare the request to execute the command
-	executor.StreamOptions.Tty = false
-	executor.StreamOptions.Stdin = nil
-
-	// Execute the command within the pod
-	err = executor.Stream(remotecommand.StreamOptions{
-		Stdout: os.Stdout,
-		Stderr: os.Stderr,
-	})
+	req := client.CoreV1().RESTClient().Post().Resource("pods").Name(podName).
+		Namespace(namespace).SubResource("exec")
+	option := &v1.PodExecOptions{
+		Command: cmd,
+		Stdin:   true,
+		Stdout:  true,
+		Stderr:  true,
+		TTY:     true,
+	}
+	if stdin == nil {
+		option.Stdin = false
+	}
+	req.VersionedParams(
+		option,
+		scheme.ParameterCodec,
+	)
+	exec, err := remotecommand.NewSPDYExecutor(config, "POST", req.URL())
+	if err != nil {
+		return err
+	}
+	streamOptions := remotecommand.StreamOptions{
+		Stdin:  stdin,
+		Stdout: stdout,
+		Stderr: stderr,
+	}
+	err = exec.StreamWithContext(context.TODO(), streamOptions)
 	if err != nil {
 		return err
 	}
