@@ -1,53 +1,56 @@
 package helper
 
 import (
-	"context"
-	"io"
+	"bytes"
+	"fmt"
 
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
-	restclient "k8s.io/client-go/rest"
+
+	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/remotecommand"
 )
 
 // EnterInPod executes a command on a specific pod and waits for the command's output.
-func EnterInPod(client *kubernetes.Clientset, config *restclient.Config, podName string, namespace string,
-	command string, stdin io.Reader, stdout io.Writer, stderr io.Writer) error {
-	cmd := []string{
-		"sh",
-		"-c",
-		command,
-	}
-	req := client.CoreV1().RESTClient().Post().Resource("pods").Name(podName).
-		Namespace(namespace).SubResource("exec")
-	option := &v1.PodExecOptions{
-		Command: cmd,
-		Stdin:   true,
-		Stdout:  true,
-		Stderr:  true,
-		TTY:     true,
-	}
-	if stdin == nil {
-		option.Stdin = false
-	}
-	req.VersionedParams(
-		option,
-		scheme.ParameterCodec,
+func EnterInPod(nameSpace string, podName string,
+	command string) (string, string, error) {
+	kubeCfg := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
+		clientcmd.NewDefaultClientConfigLoadingRules(),
+		&clientcmd.ConfigOverrides{},
 	)
-	exec, err := remotecommand.NewSPDYExecutor(config, "POST", req.URL())
+	restCfg, err := kubeCfg.ClientConfig()
 	if err != nil {
-		return err
+		return "", "", err
 	}
-	streamOptions := remotecommand.StreamOptions{
-		Stdin:  stdin,
-		Stdout: stdout,
-		Stderr: stderr,
-	}
-	err = exec.StreamWithContext(context.TODO(), streamOptions)
+	coreClient, err := kubernetes.NewForConfig(restCfg)
 	if err != nil {
-		return err
+		return "", "", err
 	}
 
-	return nil
+	buf := &bytes.Buffer{}
+	errBuf := &bytes.Buffer{}
+	request := coreClient.CoreV1().RESTClient().
+		Post().
+		Namespace(nameSpace).
+		Resource("pods").
+		Name(podName).
+		SubResource("exec").
+		VersionedParams(&v1.PodExecOptions{
+			Command: []string{"/bin/sh", "-c", command},
+			Stdin:   false,
+			Stdout:  true,
+			Stderr:  true,
+			TTY:     true,
+		}, scheme.ParameterCodec)
+	exec, err := remotecommand.NewSPDYExecutor(restCfg, "POST", request.URL())
+	err = exec.Stream(remotecommand.StreamOptions{
+		Stdout: buf,
+		Stderr: errBuf,
+	})
+	if err != nil {
+		return "", "", fmt.Errorf("%w Failed executing command %s on %v/%v", err, command, nameSpace, podName)
+	}
+
+	return buf.String(), errBuf.String(), nil
 }

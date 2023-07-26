@@ -4,10 +4,8 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"bytes"
 	"log"
 
-	"github.com/Parthiba-Hazra/clstres/client"
 	"github.com/Parthiba-Hazra/clstres/cmd"
 	"github.com/Parthiba-Hazra/clstres/helper"
 	"github.com/spf13/cobra"
@@ -22,18 +20,13 @@ var podEnterCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("ns")
 		podName, _ := cmd.Flags().GetString("p")
 		command, _ := cmd.Flags().GetString("cmd")
-		stdin := bytes.NewBufferString("input")
-		stdout := bytes.NewBuffer(nil)
-		stderr := bytes.NewBuffer(nil)
 
-		client, err := client.GetClient()
-		if err != nil {
-			log.Printf("error getting kubernetes client: %v", err)
-		}
-		err = helper.EnterInPod(client, nil, podName, namespace, command, stdin, stdout, stderr)
+		ans2, ans1, err := helper.EnterInPod(namespace, podName, command)
 		if err != nil {
 			log.Printf("EnterInPod returned an error: %v", err)
 		}
+		log.Print(ans1)
+		log.Print(ans2)
 	},
 }
 
