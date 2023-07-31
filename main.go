@@ -11,6 +11,7 @@ import (
 	_ "github.com/Parthiba-Hazra/clstres/cmd/details/service"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/exec"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/show"
+	_ "github.com/Parthiba-Hazra/clstres/cmd/show/allResources"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/show/deployments"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/show/namespaces"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/show/pods"
