@@ -16,13 +16,10 @@ import (
 // serviceCmd represents the service command
 var serviceCmd = &cobra.Command{
 	Use:   "service",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Get details of a Kubernetes service",
+	Long: `Retrieve detailed information about a Kubernetes service, including its name, namespace,
+creation time, labels, type, cluster IP, external IPs, load balancer IP, ports, selector,
+and session affinity.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("ns")
 		serviceName, _ := cmd.Flags().GetString("s")
@@ -65,7 +62,7 @@ to quickly create a Cobra application.`,
 
 func init() {
 	details.DetailsCmd.AddCommand(serviceCmd)
-	serviceCmd.PersistentFlags().String("s", "", "You need to provide the name of pod in order to get details of that perticular pod (eg: --s=pod-name)")
+	serviceCmd.PersistentFlags().String("s", "", "You need to provide the name of pod in order to get details of that perticular pod (eg: --s=service-name)")
 
 	// Here you will define your flags and configuration settings.
 

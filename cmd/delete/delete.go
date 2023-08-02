@@ -15,8 +15,10 @@ import (
 // deleteCmd represents the delete command
 var deleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: "Delete resource in the kubernetes cluster",
-	Long:  `It deletes the resources based on user provided info.`,
+	Short: "Delete resource in the Kubernetes cluster",
+	Long: `Delete Kubernetes resources based on the provided information. This command allows you to delete
+a specific resource in the specified namespace. For example, to delete a deployment, run the command as follows:
+'clstres delete --k=deployment --rn=my-deployment --ns=default'`,
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("ns")
 		resourceName, _ := cmd.Flags().GetString("rn")

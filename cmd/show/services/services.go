@@ -17,13 +17,9 @@ import (
 // servicesCmd represents the services command
 var servicesCmd = &cobra.Command{
 	Use:   "services",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Show services in a Kubernetes namespace",
+	Long: `Display a list of services in a specified Kubernetes namespace, including their names,
+namespaces, types, cluster IP or external IPs and ages.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("ns")
 		client, err := client.GetClient()

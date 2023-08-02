@@ -16,8 +16,8 @@ import (
 // detailsCmd represents the details command
 var detailsCmd = &cobra.Command{
 	Use:   "pod",
-	Short: "show a pod's details",
-	Long:  `It a detail view of a pod`,
+	Short: "Show details of a Kubernetes pod",
+	Long:  `Show detailed information about a Kubernetes pod including its name, namespace, creation time, phase, and conditions.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("ns")
 		podName, _ := cmd.Flags().GetString("p")

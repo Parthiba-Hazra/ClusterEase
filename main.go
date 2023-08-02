@@ -7,6 +7,8 @@ import (
 	"github.com/Parthiba-Hazra/clstres/cmd"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/create"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/details"
+	_ "github.com/Parthiba-Hazra/clstres/cmd/details/deployments"
+	_ "github.com/Parthiba-Hazra/clstres/cmd/details/namespace"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/details/pod"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/details/service"
 	_ "github.com/Parthiba-Hazra/clstres/cmd/exec"
